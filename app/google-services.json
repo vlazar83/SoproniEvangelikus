@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "858851180385",
+    "firebase_url": "https://sopronievangelikus.firebaseio.com",
+    "project_id": "sopronievangelikus",
+    "storage_bucket": "sopronievangelikus.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:858851180385:android:4d9ac095468470449e8f20",
+        "android_client_info": {
+          "package_name": "com.vlazar83.sopronievangelikus"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "858851180385-bk5fn7t0urhlgvicsnm7mnsrd628m4ja.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.vlazar83.sopronievangelikus",
+            "certificate_hash": "542139e3d8d8bbca3fd660092ed54bf3924cf7e5"
+          }
+        },
+        {
+          "client_id": "858851180385-j9rtosutdl38tmo47qd410qf719aci9d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDNLRDSFz7Vis-8S1ojM2WYN6qVWcz0YKg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "858851180385-j9rtosutdl38tmo47qd410qf719aci9d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
