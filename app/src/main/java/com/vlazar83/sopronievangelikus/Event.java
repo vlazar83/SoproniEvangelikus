@@ -37,4 +37,7 @@ public class Event implements Serializable {
         this.fullName = fullName;
         this.eventDate = eventDate;
     }
+
+    public Event() {
+    }
 }
