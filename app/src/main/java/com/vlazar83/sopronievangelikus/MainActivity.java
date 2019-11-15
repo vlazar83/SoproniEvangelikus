@@ -10,6 +10,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.firebase.ui.auth.AuthUI;
@@ -64,6 +66,17 @@ public class MainActivity extends AppCompatActivity {
         mEventAdapter = new EventAdapter(this, new ArrayList<Event>());
 
         listView.setAdapter(mEventAdapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent eventDetailsIntent = new Intent(MainActivity.this, EventDetailsActivity.class);
+                eventDetailsIntent.putExtra(INTENT_EVENT_DETAILS,mEventAdapter.getItem(position));
+
+                // Start the new activity
+                startActivity(eventDetailsIntent);
+            }
+        });
 
 
         mAuthStateListener = new FirebaseAuth.AuthStateListener() {
