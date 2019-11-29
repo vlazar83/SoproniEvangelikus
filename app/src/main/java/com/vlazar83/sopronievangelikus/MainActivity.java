@@ -23,19 +23,15 @@ import com.firebase.ui.auth.AuthUI;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -268,25 +264,8 @@ public class MainActivity extends AppCompatActivity {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 Log.d(LOG_TAG_FOR_DB_READ, document.getId() + " => " + document.getData());
 
-                                HashMap tempMap = new HashMap(document.getData());
-                                Timestamp timestamp = (Timestamp) tempMap.get("eventDateAndTime");
-                                GeoPoint location = (GeoPoint) tempMap.get("location");
-
-                                Long eventDateAndTimeSeconds = timestamp.getSeconds();
-                                Integer eventDateAndTimeNanoSeconds = timestamp.getNanoseconds();
-
-                                double latitude = location.getLatitude();
-                                double longitude = location.getLongitude();
-
-                                tempMap.remove("eventDateAndTime");
-                                tempMap.put("eventDateAndTimeSeconds", eventDateAndTimeSeconds);
-                                tempMap.put("eventDateAndTimeNanoSeconds", eventDateAndTimeNanoSeconds);
-
-                                tempMap.remove("location");
-                                tempMap.put("latitude", latitude);
-                                tempMap.put("longitude", longitude);
-
-                                Event event = new Event(tempMap);
+                                // convert the document to Event format and add it to adapter
+                                Event event = Utils.convertDocumentDataToEventData(document);
                                 mEventAdapter.add(event);
                             }
                         } else {
