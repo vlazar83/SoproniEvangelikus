@@ -2,4 +2,11 @@
     <string name="app_name">SoproniEvangelikus</string>
     <string name="action_settings">Settings</string>
     <string name="action_logout">LogOut</string>
+    <string name="event_name_label">Event Name:</string>
+    <string name="event_full_name_label">Event Full Name:</string>
+    <string name="event_date_label">Event Date:</string>
+    <string name="event_comments_label">Comments:</string>
+    <string name="event_with_communion_label">With Communion</string>
+    <string name="event_pastor_name_label">Pastor Name:</string>
+    <string name="event_type_of_event_label">Event Type:</string>
 </resources>
