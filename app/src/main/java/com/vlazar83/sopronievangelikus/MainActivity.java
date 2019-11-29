@@ -14,21 +14,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ListView;
 
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,13 +38,14 @@ public class MainActivity extends AppCompatActivity {
     public static final String ANONYMOUS = "anonymous";
     private static final String LOG_TAG = MainActivity.class.getName();
     public static final String INTENT_EVENT_DETAILS = "INTENT_EVENT_DETAILS";
+    public static final String LOG_TAG_FOR_DB_READ = "readFromFirestoreDB";
 
     // Firebase instance variables
-    private FirebaseDatabase mFirebaseDatabase;
-    private DatabaseReference mMessagesDatabaseReference;
     private FirebaseAuth mFirebaseAuth;
     private FirebaseAuth.AuthStateListener mAuthStateListener;
-    private ChildEventListener mChildEventListener;
+
+    // Access a Cloud Firestore instance from your Activity
+    private FirebaseFirestore mFirestoreDb;
 
     public static final int RC_SIGN_IN = 1;
     private EventAdapter mEventAdapter;
@@ -55,12 +56,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // switch off fab button until admin authentication does not happen
+        final FloatingActionButton fabAddEvent = (FloatingActionButton) findViewById(R.id.fab_add_event);
+        fabAddEvent.setEnabled(false);
+        fabAddEvent.setAlpha(1.0f);
+
+        fabAddEvent.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+            }
+        });
+
         mUsername = ANONYMOUS;
 
-        // Initialize Firebase components
-        // use FireStore instead : https://codelabs.developers.google.com/codelabs/firestore-android/#4
-        mFirebaseDatabase = FirebaseDatabase.getInstance();
-        mMessagesDatabaseReference = mFirebaseDatabase.getReference().child("events");
         mFirebaseAuth = FirebaseAuth.getInstance();
 
         //setup the toolbar
@@ -150,6 +160,14 @@ public class MainActivity extends AppCompatActivity {
                 if (firebaseUser != null){
                     // User is signed in
                     onSignedInInitialize(firebaseUser.getDisplayName());
+
+                    // Enable fab button for event creation for admin
+                    if (firebaseUser.getEmail().equals("test2@gmail.com")){
+                        fabAddEvent.setEnabled(false);
+                        fabAddEvent.setAlpha(1.0f);
+                    }
+
+
                 }else {
                     // User is signed out
                     onSignedOutCleanup();
@@ -220,38 +238,40 @@ public class MainActivity extends AppCompatActivity {
 
     private void onSignedInInitialize(String username) {
         mUsername = username;
-        attachDatabaseReadListener();
+        mEventAdapter.clear();
+        readEventsFromDB();
     }
 
     private void onSignedOutCleanup() {
         mUsername = ANONYMOUS;
         mEventAdapter.clear();
-        detachDatabaseReadListener();
     }
 
-    private void attachDatabaseReadListener() {
-        if (mChildEventListener == null) {
-            mChildEventListener = new ChildEventListener() {
-                @Override
-                public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    Event event = dataSnapshot.getValue(Event.class);
-                    mEventAdapter.add(event);
-                }
+    private void readEventsFromDB() {
 
-                public void onChildChanged(DataSnapshot dataSnapshot, String s) {}
-                public void onChildRemoved(DataSnapshot dataSnapshot) {}
-                public void onChildMoved(DataSnapshot dataSnapshot, String s) {}
-                public void onCancelled(DatabaseError databaseError) {}
-            };
-            mMessagesDatabaseReference.addChildEventListener(mChildEventListener);
-        }
-    }
+        // Initialize Firestore DB components
+        // https://firebase.google.com/docs/firestore/quickstart
+        mFirestoreDb = FirebaseFirestore.getInstance();
+        // Create a reference to the cities collection
+        CollectionReference eventsRef = mFirestoreDb.collection("events");
 
-    private void detachDatabaseReadListener() {
-        if (mChildEventListener != null) {
-            mMessagesDatabaseReference.removeEventListener(mChildEventListener);
-            mChildEventListener = null;
-        }
+        eventsRef.orderBy("name")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                Log.d(LOG_TAG_FOR_DB_READ, document.getId() + " => " + document.getData());
+                                Event event = new Event(document.getData());
+                                mEventAdapter.add(event);
+                            }
+                        } else {
+                            Log.w(LOG_TAG_FOR_DB_READ, "Error getting documents.", task.getException());
+                        }
+                    }
+                });
+
     }
 
 }

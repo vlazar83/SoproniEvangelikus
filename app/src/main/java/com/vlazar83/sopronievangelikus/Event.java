@@ -1,6 +1,8 @@
 package com.vlazar83.sopronievangelikus;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Event implements Serializable {
 
@@ -36,6 +38,11 @@ public class Event implements Serializable {
         this.name = name;
         this.fullName = fullName;
         this.eventDate = eventDate;
+    }
+
+    public Event(Map map) {
+        this.name = (String)map.get("name");
+        this.fullName = (String)map.get("fullName");
     }
 
     public Event() {
