@@ -1,13 +1,9 @@
 package com.vlazar83.sopronievangelikus;
 
-import com.google.firebase.firestore.GeoPoint;
 import java.io.Serializable;
 import java.util.Map;
 
 public class Event implements Serializable {
-
-    private static final GeoPoint churchLocation = new GeoPoint(47.685276, 16.589422);
-    private static final GeoPoint congregationHouseLocation = new GeoPoint(47.685263, 16.588625);
 
     private String name;
     private String fullName;
@@ -71,14 +67,6 @@ public class Event implements Serializable {
 
     public void setEventDateAndTimeNanoSeconds(Integer eventDateAndTimeNanoSeconds) {
         this.eventDateAndTimeNanoSeconds = eventDateAndTimeNanoSeconds;
-    }
-
-    public static GeoPoint getChurchLocation() {
-        return churchLocation;
-    }
-
-    public static GeoPoint getCongregationHouseLocation() {
-        return congregationHouseLocation;
     }
 
     public String getComments() {

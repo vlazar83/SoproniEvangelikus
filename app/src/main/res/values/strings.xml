@@ -13,4 +13,11 @@
     <string name="create_event_choose_date">Choose Date</string>
     <string name="create_event_choose_time">Choose Time</string>
     <string name="create_event_send_button">Create Event</string>
+    <string name="create_event_location_label">Location:</string>
+
+    <string-array name="locations">
+        <item>Church</item>
+        <item>Congregation House</item>
+    </string-array>
+
 </resources>

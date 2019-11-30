@@ -6,12 +6,15 @@ import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +26,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.GeoPoint;
 
 import java.util.Calendar;
 import java.util.HashMap;
@@ -30,6 +34,9 @@ import java.util.Map;
 
 public class CreateEventActivity extends AppCompatActivity implements FirebaseEventInterface{
 
+    private final GeoPoint churchLocation = new GeoPoint(47.685276, 16.589422);
+    private final GeoPoint congregationHouseLocation = new GeoPoint(47.685263, 16.588625);
+    private static Spinner staticSpinner;
     public static final String LOG_TAG_FOR_DB_WRITE = "writeToFirestoreDB";
     private static TextView selectedDateTextView, selectedTimeTextView;
     private static EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
@@ -73,6 +80,12 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
             }
         });
 
+        staticSpinner = (Spinner) findViewById(R.id.event_location_dropdown_list);
+        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter.createFromResource(this, R.array.locations, android.R.layout.simple_spinner_item);
+
+        // Apply the adapter to the spinner
+        staticSpinner.setAdapter(staticAdapter);
+
         Button createEventButton = findViewById(R.id.create_event_send_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -89,8 +102,14 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
                 String date = CreateEventActivity.selectedDateTextView.getText().toString();
                 String time = CreateEventActivity.selectedTimeTextView.getText().toString();
                 data.put("eventDateAndTime", Utils.convertTimeDetailsInStringsToTimestamp(date, time));
-                // TODO
-                data.put("location", null);
+
+                if(staticSpinner.getSelectedItem().toString().equals("Church")){
+                    data.put("location", churchLocation);
+                } else if(staticSpinner.getSelectedItem().toString().equals("Congregation House")) {
+                    data.put("location", congregationHouseLocation);
+                } else {
+                    data.put("location", null);
+                }
 
                 sendFirebaseEvent(data);
 
@@ -111,32 +130,16 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
                     @Override
                     public void onSuccess(DocumentReference documentReference) {
                         Log.d(LOG_TAG_FOR_DB_WRITE, "DocumentSnapshot added with ID: " + documentReference.getId());
+                        Toast.makeText(CreateEventActivity.this, "Event successfully created", Toast.LENGTH_LONG).show();
                     }
                 })
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
                         Log.w(LOG_TAG_FOR_DB_WRITE, "Error adding document", e);
+                        Toast.makeText(CreateEventActivity.this, "Event creation failed", Toast.LENGTH_LONG).show();
                     }
                 });
-
-        /*
-        CollectionReference eventsRef = db.collection("events");
-        eventsRef.add(firebaseEvent)
-                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                    @Override
-                    public void onSuccess(DocumentReference documentReference) {
-                        Log.d(LOG_TAG_FOR_DB_WRITE, "DocumentSnapshot added with ID: " + documentReference.getId());
-                    }
-                })
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Log.w(LOG_TAG_FOR_DB_WRITE, "Error adding document", e);
-                    }
-                });
-*/
-
     }
 
     public static class DateDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
