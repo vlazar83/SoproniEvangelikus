@@ -1,6 +1,5 @@
 package com.vlazar83.sopronievangelikus;
 
-import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 import java.io.Serializable;
 import java.util.Map;

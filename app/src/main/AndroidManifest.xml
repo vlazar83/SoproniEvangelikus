@@ -16,6 +16,7 @@
             </intent-filter>
         </activity>
         <activity android:name="com.vlazar83.sopronievangelikus.EventDetailsActivity" />
+        <activity android:name="com.vlazar83.sopronievangelikus.CreateEventActivity" />
 
         <meta-data android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAaFZ2tehk9I0Zi_iqqtBpS6R51E785WK8"/>

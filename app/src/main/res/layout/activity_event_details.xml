@@ -50,7 +50,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewEventName" />
 
     <TextView
-        android:id="@+id/textViewEventDateAndTime"
+        android:id="@+id/textViewEventDate"
         android:layout_width="180dp"
         android:layout_height="20dp"
         android:layout_marginStart="8dp"
@@ -103,7 +103,7 @@
         android:layout_marginTop="8dp"
         android:text="@string/event_type_of_event_label"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEventDateAndTime" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewEventDate" />
 
     <TextView
         android:id="@+id/textViewPastorName"

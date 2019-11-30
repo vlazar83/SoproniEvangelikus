@@ -58,13 +58,14 @@ public class MainActivity extends AppCompatActivity {
 
         // switch off fab button until admin authentication does not happen
         final FloatingActionButton fabAddEvent = (FloatingActionButton) findViewById(R.id.fab_add_event);
-        fabAddEvent.setEnabled(false);
-        fabAddEvent.setAlpha(1.0f);
+        fabAddEvent.hide();
 
         fabAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Intent eventDetailsIntent = new Intent(MainActivity.this, CreateEventActivity.class);
+                // Start the new activity
+                startActivity(eventDetailsIntent);
 
             }
         });
@@ -162,9 +163,8 @@ public class MainActivity extends AppCompatActivity {
                     onSignedInInitialize(firebaseUser.getDisplayName());
 
                     // Enable fab button for event creation for admin
-                    if (firebaseUser.getEmail().equals("test2@gmail.com")){
-                        fabAddEvent.setEnabled(false);
-                        fabAddEvent.setAlpha(1.0f);
+                    if (firebaseUser.getEmail().equals("lazar.viktor@gmail.com")){
+                        fabAddEvent.show();
                     }
 
 

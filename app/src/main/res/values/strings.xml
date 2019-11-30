@@ -5,8 +5,12 @@
     <string name="event_name_label">Event Name:</string>
     <string name="event_full_name_label">Event Full Name:</string>
     <string name="event_date_label">Event Date:</string>
+    <string name="event_time_label">Event Time:</string>
     <string name="event_comments_label">Comments:</string>
     <string name="event_with_communion_label">With Communion</string>
     <string name="event_pastor_name_label">Pastor Name:</string>
     <string name="event_type_of_event_label">Event Type:</string>
+    <string name="create_event_choose_date">Choose Date</string>
+    <string name="create_event_choose_time">Choose Time</string>
+    <string name="create_event_send_button">Create Event</string>
 </resources>
