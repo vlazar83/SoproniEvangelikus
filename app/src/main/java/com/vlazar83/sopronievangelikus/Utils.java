@@ -4,6 +4,10 @@ import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.HashMap;
 
 public class Utils {
@@ -30,6 +34,14 @@ public class Utils {
 
         return new Event(tempMap);
 
+    }
+
+    public static String convertTimeDetailsToTimestamp(long eventDateAndTimeSeconds, int eventDateAndTimeNanoSeconds){
+
+        Timestamp timestamp = new Timestamp(eventDateAndTimeSeconds, eventDateAndTimeNanoSeconds);
+        Date date = timestamp.toDate();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        return dateFormat.format(date);
     }
 
 }
