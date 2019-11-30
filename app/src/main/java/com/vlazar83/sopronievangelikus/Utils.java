@@ -43,7 +43,7 @@ public class Utils {
 
         Timestamp timestamp = new Timestamp(eventDateAndTimeSeconds, eventDateAndTimeNanoSeconds);
         Date date = timestamp.toDate();
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         return dateFormat.format(date);
     }
 

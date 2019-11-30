@@ -255,7 +255,7 @@ public class MainActivity extends AppCompatActivity {
         // Create a reference to the cities collection
         CollectionReference eventsRef = mFirestoreDb.collection("events");
 
-        eventsRef.orderBy("name")
+        eventsRef.orderBy("eventDateAndTime")
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
