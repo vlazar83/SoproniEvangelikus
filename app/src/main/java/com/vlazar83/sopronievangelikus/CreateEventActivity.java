@@ -4,23 +4,37 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.DialogFragment;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class CreateEventActivity extends AppCompatActivity implements FirebaseEventInterface{
 
-    private int year, month, day;
-    private DatePicker datePicker;
+    public static final String LOG_TAG_FOR_DB_WRITE = "writeToFirestoreDB";
     private static TextView selectedDateTextView, selectedTimeTextView;
+    private static EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
+    private static CheckBox withCommunionCheckBox;
+    private HashMap<String, Object> data;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -29,6 +43,13 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         setContentView(R.layout.activity_create_event);
         this.selectedDateTextView = findViewById(R.id.create_event_choosen_date_text_view);
         this.selectedTimeTextView = findViewById(R.id.create_event_choosen_time_text_view);
+
+        this.nameEditTextView = findViewById(R.id.event_name);
+        this.fullNameEditTextView = findViewById(R.id.event_full_name);
+        this.eventTypeEditTextView = findViewById(R.id.event_type);
+        this.pastorNameEditTextView = findViewById(R.id.event_pastor_name);
+        this.commentEditTextView = findViewById(R.id.event_comments);
+        this.withCommunionCheckBox = findViewById(R.id.event_with_communion);
 
         Button chooseDateButton = findViewById(R.id.create_event_choose_date_button);
         chooseDateButton.setOnClickListener(new View.OnClickListener() {
@@ -52,12 +73,69 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
             }
         });
 
+        Button createEventButton = findViewById(R.id.create_event_send_button);
+        createEventButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                data = new HashMap<>();
+
+                data.put("name", CreateEventActivity.nameEditTextView.getText().toString());
+                data.put("fullName", CreateEventActivity.fullNameEditTextView.getText().toString());
+                data.put("comments", CreateEventActivity.commentEditTextView.getText().toString());
+                data.put("pastorName", CreateEventActivity.pastorNameEditTextView.getText().toString());
+                data.put("typeOfEvent", CreateEventActivity.eventTypeEditTextView.getText().toString());
+                data.put("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
+                String date = CreateEventActivity.selectedDateTextView.getText().toString();
+                String time = CreateEventActivity.selectedTimeTextView.getText().toString();
+                data.put("eventDateAndTime", Utils.convertTimeDetailsInStringsToTimestamp(date, time));
+                // TODO
+                data.put("location", null);
+
+                sendFirebaseEvent(data);
+
+            }
+        });
+
     }
 
-
-
     @Override
-    public void sendFirebaseEvent(FirebaseEvent firebaseEvent) {
+    public void sendFirebaseEvent(Map<String, Object> firebaseEvent) {
+
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Add a new document with a generated ID
+        db.collection("events")
+                .add(firebaseEvent)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(LOG_TAG_FOR_DB_WRITE, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(LOG_TAG_FOR_DB_WRITE, "Error adding document", e);
+                    }
+                });
+
+        /*
+        CollectionReference eventsRef = db.collection("events");
+        eventsRef.add(firebaseEvent)
+                .addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                    @Override
+                    public void onSuccess(DocumentReference documentReference) {
+                        Log.d(LOG_TAG_FOR_DB_WRITE, "DocumentSnapshot added with ID: " + documentReference.getId());
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.w(LOG_TAG_FOR_DB_WRITE, "Error adding document", e);
+                    }
+                });
+*/
 
     }
 

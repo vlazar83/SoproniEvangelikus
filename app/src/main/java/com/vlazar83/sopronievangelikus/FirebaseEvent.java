@@ -3,6 +3,9 @@ package com.vlazar83.sopronievangelikus;
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FirebaseEvent {
 
     private String name;
