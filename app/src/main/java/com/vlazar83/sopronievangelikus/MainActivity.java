@@ -25,6 +25,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -42,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private static final String LOG_TAG_FOR_DELETE = "deleteFromFirestoreDB";
     public static final String INTENT_EVENT_DETAILS = "INTENT_EVENT_DETAILS";
     public static final String LOG_TAG_FOR_DB_READ = "readFromFirestoreDB";
+    public static final long aDayInMilliseconds = 86400000;
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
@@ -286,6 +289,7 @@ public class MainActivity extends AppCompatActivity {
         CollectionReference eventsRef = mFirestoreDb.collection("events");
 
         eventsRef.orderBy("eventDateAndTime")
+                .whereGreaterThanOrEqualTo("eventDateAndTime", new Timestamp(new Date(System.currentTimeMillis() - aDayInMilliseconds)))  // filter to see the events from yesterday on
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override
