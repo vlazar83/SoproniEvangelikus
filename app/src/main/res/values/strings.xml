@@ -14,6 +14,8 @@
     <string name="create_event_choose_time">Choose Time</string>
     <string name="create_event_send_button">Create Event</string>
     <string name="create_event_location_label">Location:</string>
+    <string name="pref_previously_started">FirstStart</string>
+
 
     <string-array name="locations">
         <item>Church</item>

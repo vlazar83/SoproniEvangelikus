@@ -6,9 +6,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String INTENT_EVENT_DETAILS = "INTENT_EVENT_DETAILS";
     public static final String LOG_TAG_FOR_DB_READ = "readFromFirestoreDB";
     public static final long aDayInMilliseconds = 86400000;
+    private SwipeMenuListView listView;
 
     // Firebase instance variables
     private FirebaseAuth mFirebaseAuth;
@@ -60,6 +63,18 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        // check if this is the first run
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getBaseContext());
+        boolean previouslyStarted = prefs.getBoolean(getString(R.string.pref_previously_started), false);
+        if(!previouslyStarted) {
+            SharedPreferences.Editor edit = prefs.edit();
+            edit.putBoolean(getString(R.string.pref_previously_started), Boolean.TRUE);
+            edit.commit();
+
+            startActivity(new Intent(MainActivity.this, IntroActivity.class));
+        }
+
         setContentView(R.layout.activity_main);
 
         // switch off fab button until admin authentication does not happen
@@ -84,95 +99,11 @@ public class MainActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
 
-        // Create swipe menu list
-        SwipeMenuCreator creator = new SwipeMenuCreator() {
-
-            @Override
-            public void create(SwipeMenu menu) {
-                // create "delete" item
-                SwipeMenuItem deleteItem = new SwipeMenuItem(
-                        getApplicationContext());
-                // set item background
-                deleteItem.setBackground(new ColorDrawable(Color.RED));
-                // set item width
-                deleteItem.setWidth(170);
-                // set a icon
-                deleteItem.setIcon(R.drawable.ic_delete);
-                // add to menu
-                menu.addMenuItem(deleteItem);
-            }
-        };
-
-        final SwipeMenuListView listView = (SwipeMenuListView) findViewById(R.id.eventlist);
-        // set creator
-        listView.setMenuCreator(creator);
+        listView = (SwipeMenuListView) findViewById(R.id.eventlist);
 
         mEventAdapter = new EventAdapter(this, new ArrayList<Event>());
 
         listView.setAdapter(mEventAdapter);
-
-        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                switch (index) {
-                    // delete action selected
-                    case 0:
-
-                        Event event = (Event)listView.getAdapter().getItem(position);
-
-                        // do query first to get the documentId
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
-                        db.collection("events")
-                                .whereEqualTo("name", event.getName())
-                                .whereEqualTo("fullName", event.getFullName())
-                                .whereEqualTo("pastorName", event.getPastorName())
-                                .whereEqualTo("comments", event.getComments())
-                                .get()
-                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            for (QueryDocumentSnapshot document : task.getResult()) {
-                                                Log.d(LOG_TAG_FOR_DB_READ, document.getId() + " => " + document.getData());
-                                                String documentId = document.getId();
-
-                                                FirebaseFirestore db = FirebaseFirestore.getInstance();
-                                                // execute the delete with the documentId
-                                                db.collection("events").document(documentId)
-                                                        .delete()
-                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                            @Override
-                                                            public void onSuccess(Void aVoid) {
-                                                                Log.d(LOG_TAG_FOR_DELETE, "DocumentSnapshot successfully deleted!");
-
-                                                                // reload the list
-                                                                mEventAdapter.clear();
-                                                                readEventsFromDB();
-                                                            }
-                                                        })
-                                                        .addOnFailureListener(new OnFailureListener() {
-                                                            @Override
-                                                            public void onFailure(@NonNull Exception e) {
-                                                                Log.w(LOG_TAG_FOR_DELETE, "Error deleting document", e);
-                                                            }
-                                                        });
-
-                                            }
-                                        } else {
-                                            Log.d(LOG_TAG_FOR_DB_READ, "Error getting documents: ", task.getException());
-                                        }
-                                    }
-                                });
-
-                        break;
-                }
-                // false : close the menu; true : not close the menu
-                return false;
-            }
-        });
-
-        listView.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
 
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -198,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
                     // Enable fab button for event creation for admin
                     if (firebaseUser.getEmail().equals("lazar.viktor@gmail.com")){
                         fabAddEvent.show();
+                        createSwipeMenuForAdmin();
                     }
 
 
@@ -273,6 +205,95 @@ public class MainActivity extends AppCompatActivity {
         mUsername = username;
         mEventAdapter.clear();
         readEventsFromDB();
+    }
+
+    private void createSwipeMenuForAdmin() {
+
+        // Create swipe menu list
+        SwipeMenuCreator creator = new SwipeMenuCreator() {
+
+            @Override
+            public void create(SwipeMenu menu) {
+                // create "delete" item
+                SwipeMenuItem deleteItem = new SwipeMenuItem(
+                        getApplicationContext());
+                // set item background
+                deleteItem.setBackground(new ColorDrawable(Color.RED));
+                // set item width
+                deleteItem.setWidth(170);
+                // set a icon
+                deleteItem.setIcon(R.drawable.ic_delete);
+                // add to menu
+                menu.addMenuItem(deleteItem);
+            }
+        };
+
+        // set creator
+        listView.setMenuCreator(creator);
+
+        listView.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+                switch (index) {
+                    // delete action selected
+                    case 0:
+
+                        Event event = (Event)listView.getAdapter().getItem(position);
+
+                        // do query first to get the documentId
+                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+                        db.collection("events")
+                                .whereEqualTo("name", event.getName())
+                                .whereEqualTo("fullName", event.getFullName())
+                                .whereEqualTo("pastorName", event.getPastorName())
+                                .whereEqualTo("comments", event.getComments())
+                                .get()
+                                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                                Log.d(LOG_TAG_FOR_DB_READ, document.getId() + " => " + document.getData());
+                                                String documentId = document.getId();
+
+                                                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                                // execute the delete with the documentId
+                                                db.collection("events").document(documentId)
+                                                        .delete()
+                                                        .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            @Override
+                                                            public void onSuccess(Void aVoid) {
+                                                                Log.d(LOG_TAG_FOR_DELETE, "DocumentSnapshot successfully deleted!");
+
+                                                                // reload the list
+                                                                mEventAdapter.clear();
+                                                                readEventsFromDB();
+                                                            }
+                                                        })
+                                                        .addOnFailureListener(new OnFailureListener() {
+                                                            @Override
+                                                            public void onFailure(@NonNull Exception e) {
+                                                                Log.w(LOG_TAG_FOR_DELETE, "Error deleting document", e);
+                                                            }
+                                                        });
+
+                                            }
+                                        } else {
+                                            Log.d(LOG_TAG_FOR_DB_READ, "Error getting documents: ", task.getException());
+                                        }
+                                    }
+                                });
+
+                        break;
+                }
+                // false : close the menu; true : not close the menu
+                return false;
+            }
+        });
+
+        listView.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+
     }
 
     private void onSignedOutCleanup() {

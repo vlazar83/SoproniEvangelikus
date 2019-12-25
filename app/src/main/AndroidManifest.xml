@@ -11,15 +11,18 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity android:name=".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="com.vlazar83.sopronievangelikus.EventDetailsActivity" />
-        <activity android:name="com.vlazar83.sopronievangelikus.CreateEventActivity" />
+        <activity android:name=".EventDetailsActivity" />
+        <activity android:name=".CreateEventActivity" />
+        <activity android:name=".IntroActivity" />
 
-        <meta-data android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAaFZ2tehk9I0Zi_iqqtBpS6R51E785WK8"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAaFZ2tehk9I0Zi_iqqtBpS6R51E785WK8" />
     </application>
 
 </manifest>

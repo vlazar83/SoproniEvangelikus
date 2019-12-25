@@ -29,7 +29,7 @@
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDNLRDSFz7Vis-8S1ojM2WYN6qVWcz0YKg"
+          "current_key": "AIzaSyAaFZ2tehk9I0Zi_iqqtBpS6R51E785WK8"
         }
       ],
       "services": {
@@ -38,6 +38,13 @@
             {
               "client_id": "858851180385-j9rtosutdl38tmo47qd410qf719aci9d.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "858851180385-3uub0tccdiv1j68db3sif35157ctaimh.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.vlazar83.SoproniEvangelikus-iOS"
+              }
             }
           ]
         }

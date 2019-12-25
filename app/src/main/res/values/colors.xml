@@ -4,4 +4,12 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#D81B60</color>
     <color name="colorBlue">#488DFF</color>
+
+    <color name="primary_text">#FAFAFA</color>
+    <color name="secondary_text">#FFFFFF</color>
+    <color name="color_church_building">#5EB0B8</color>
+    <color name="color_dove">#293650</color>
+    <color name="color_growth">#232F45</color>
+    <color name="color_family">#D8544D</color>
+
 </resources>

@@ -44,6 +44,9 @@ dependencies {
     // switch to Cloud FireStore
     implementation 'com.google.firebase:firebase-firestore:21.3.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+
+    // For onboarding
+    implementation 'com.cuneytayyildiz:onboarder:1.0.4'
 }
 
 apply plugin: 'com.google.gms.google-services'
