@@ -46,7 +46,7 @@ public class IntroActivity extends OnboarderActivity implements OnboarderPageCha
                         .descriptionColorId(R.color.secondary_text)
                         .multilineDescriptionCentered(true)
                         .build(),
-                
+
                 new OnboarderPage.Builder()
                         .title("Get notified")
                         .description("we are happy to see you at any of our events")
