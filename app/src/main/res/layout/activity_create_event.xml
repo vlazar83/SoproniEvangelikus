@@ -222,5 +222,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/create_event_choose_time_button" />
 
+    <ImageView
+        android:id="@+id/imagePickerView"
+        android:layout_width="93dp"
+        android:layout_height="95dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/event_location_dropdown_list"
+        app:srcCompat="@drawable/family_free_icon" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -3,6 +3,8 @@ package com.vlazar83.sopronievangelikus;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -11,6 +13,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -40,6 +43,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
     private static TextView selectedDateTextView, selectedTimeTextView;
     private static EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
     private static CheckBox withCommunionCheckBox;
+    private static ImageView imagePickerView;
     private HashMap<String, Object> data;
 
     @Override
@@ -56,6 +60,28 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         this.pastorNameEditTextView = findViewById(R.id.event_pastor_name);
         this.commentEditTextView = findViewById(R.id.event_comments);
         this.withCommunionCheckBox = findViewById(R.id.event_with_communion);
+
+        imagePickerView = (ImageView)findViewById(R.id.imagePickerView);
+
+        imagePickerView.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                Intent imagePickerIntent = new Intent(CreateEventActivity.this, ImagePickerActiviy.class);
+                // Start the new activity
+                startActivity(imagePickerIntent);
+            }
+        });
+
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            String nameOfImage = extras.getString("choosenImage");
+            Uri imgUri= Uri.parse("android.resource://com.vlazar83.sopronievangelikus/"+nameOfImage);
+            imagePickerView.setImageURI(null);
+            imagePickerView.setImageURI(imgUri);
+        }
 
         Button chooseDateButton = findViewById(R.id.create_event_choose_date_button);
         chooseDateButton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +141,14 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
             }
         });
 
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent backToHome = new Intent(CreateEventActivity.this, MainActivity.class);
+        // Start the new activity
+        startActivity(backToHome);
     }
 
     @Override
