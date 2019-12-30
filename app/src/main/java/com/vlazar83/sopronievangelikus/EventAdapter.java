@@ -1,10 +1,12 @@
 package com.vlazar83.sopronievangelikus;
 
 import android.app.Activity;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -39,6 +41,10 @@ public class EventAdapter extends ArrayAdapter<Event> {
         TextView fullNameTextView = (TextView) listItemView.findViewById(R.id.event_full_name);
 
         fullNameTextView.setText(currentEvent.getFullName());
+
+        ImageView imageView = (ImageView) listItemView.findViewById(R.id.imageViewOfEventListItem);
+        imageView.setImageURI(null);
+        imageView.setImageURI(Utils.createUriForImages(currentEvent.getEventImage()));
 
         return listItemView;
     }

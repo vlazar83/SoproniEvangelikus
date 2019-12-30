@@ -15,8 +15,9 @@ public class Event implements Serializable {
     private Boolean withCommunion;
     private String pastorName;
     private String typeOfEvent;
+    private String eventImage;
 
-    public Event(String name, String fullName, Long eventDateAndTimeSeconds, Integer eventDateAndTimeNanoSeconds, Double latitude, Double longitude, String comments, Boolean withCommunion, String pastorName, String typeOfEvent) {
+    public Event(String name, String fullName, Long eventDateAndTimeSeconds, Integer eventDateAndTimeNanoSeconds, Double latitude, Double longitude, String comments, Boolean withCommunion, String pastorName, String typeOfEvent, String eventImage) {
         this.name = name;
         this.fullName = fullName;
         this.eventDateAndTimeSeconds = eventDateAndTimeSeconds;
@@ -27,10 +28,11 @@ public class Event implements Serializable {
         this.withCommunion = withCommunion;
         this.pastorName = pastorName;
         this.typeOfEvent = typeOfEvent;
+        this.eventImage = eventImage;
     }
 
     public Event(Map map) {
-        this((String)map.get("name"), (String)map.get("fullName"), (Long)map.get("eventDateAndTimeSeconds"),  (Integer)map.get("eventDateAndTimeNanoSeconds"), (Double)map.get("latitude"), (Double)map.get("longitude"), (String)map.get("comments"), (Boolean)map.get("withCommunion"), (String)map.get("pastorName"), (String)map.get("typeOfEvent"));
+        this((String)map.get("name"), (String)map.get("fullName"), (Long)map.get("eventDateAndTimeSeconds"),  (Integer)map.get("eventDateAndTimeNanoSeconds"), (Double)map.get("latitude"), (Double)map.get("longitude"), (String)map.get("comments"), (Boolean)map.get("withCommunion"), (String)map.get("pastorName"), (String)map.get("typeOfEvent"), (String)map.get("eventImage"));
     }
 
 
@@ -115,5 +117,13 @@ public class Event implements Serializable {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getEventImage() {
+        return eventImage;
+    }
+
+    public void setEventImage(String eventImage) {
+        this.eventImage = eventImage;
     }
 }

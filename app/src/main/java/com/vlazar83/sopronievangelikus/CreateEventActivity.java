@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,6 +45,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
     private static EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
     private static CheckBox withCommunionCheckBox;
     private static ImageView imagePickerView;
+    private static String nameOfImage;
     private HashMap<String, Object> data;
 
     @Override
@@ -77,10 +79,12 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
 
         Bundle extras = getIntent().getExtras();
         if(extras != null){
-            String nameOfImage = extras.getString("choosenImage");
-            Uri imgUri= Uri.parse("android.resource://com.vlazar83.sopronievangelikus/"+nameOfImage);
+            nameOfImage = extras.getString("choosenImage");
             imagePickerView.setImageURI(null);
-            imagePickerView.setImageURI(imgUri);
+            imagePickerView.setImageURI(Utils.createUriForImages(nameOfImage));
+        } else {
+            imagePickerView.setImageURI(null);
+            imagePickerView.setImageURI(Utils.createUriForImages("/drawable/bible_free_icon"));
         }
 
         Button chooseDateButton = findViewById(R.id.create_event_choose_date_button);
@@ -116,30 +120,116 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
             @Override
             public void onClick(View v) {
 
-                data = new HashMap<>();
-
-                data.put("name", CreateEventActivity.nameEditTextView.getText().toString());
-                data.put("fullName", CreateEventActivity.fullNameEditTextView.getText().toString());
-                data.put("comments", CreateEventActivity.commentEditTextView.getText().toString());
-                data.put("pastorName", CreateEventActivity.pastorNameEditTextView.getText().toString());
-                data.put("typeOfEvent", CreateEventActivity.eventTypeEditTextView.getText().toString());
-                data.put("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
+                // if date and time is not filled, then do not trigger the event creation
                 String date = CreateEventActivity.selectedDateTextView.getText().toString();
                 String time = CreateEventActivity.selectedTimeTextView.getText().toString();
-                data.put("eventDateAndTime", Utils.convertTimeDetailsInStringsToTimestamp(date, time));
 
-                if(staticSpinner.getSelectedItem().toString().equals("Church")){
-                    data.put("location", churchLocation);
-                } else if(staticSpinner.getSelectedItem().toString().equals("Congregation House")) {
-                    data.put("location", congregationHouseLocation);
+                if (!(date.isEmpty() || time.isEmpty())){
+                    data = new HashMap<>();
+
+                    data.put("name", CreateEventActivity.nameEditTextView.getText().toString());
+                    data.put("fullName", CreateEventActivity.fullNameEditTextView.getText().toString());
+                    data.put("comments", CreateEventActivity.commentEditTextView.getText().toString());
+                    data.put("pastorName", CreateEventActivity.pastorNameEditTextView.getText().toString());
+                    data.put("typeOfEvent", CreateEventActivity.eventTypeEditTextView.getText().toString());
+                    data.put("eventImage", nameOfImage);
+                    data.put("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
+                    data.put("eventDateAndTime", Utils.convertTimeDetailsInStringsToTimestamp(date, time));
+
+                    if(staticSpinner.getSelectedItem().toString().equals("Church")){
+                        data.put("location", churchLocation);
+                    } else if(staticSpinner.getSelectedItem().toString().equals("Congregation House")) {
+                        data.put("location", congregationHouseLocation);
+                    } else {
+                        data.put("location", null);
+                    }
+
+                    sendFirebaseEvent(data);
+                    
+                    // clear the SharedPref data
+                    SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+                    SharedPreferences.Editor editor = preferences.edit();
+                    editor.clear().apply();
+
+                    // clear the UI
+                    clearUI();
+
                 } else {
-                    data.put("location", null);
+                    Toast.makeText(CreateEventActivity.this, "Fill all fields first", Toast.LENGTH_LONG).show();
                 }
 
-                sendFirebaseEvent(data);
+
 
             }
         });
+
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // Store values between instances here
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();  // Put the values from the UI
+
+        editor.putString("name", CreateEventActivity.nameEditTextView.getText().toString());
+        editor.putString("fullName", CreateEventActivity.fullNameEditTextView.getText().toString());
+        editor.putString("comments", CreateEventActivity.commentEditTextView.getText().toString());
+        editor.putString("pastorName", CreateEventActivity.pastorNameEditTextView.getText().toString());
+        editor.putString("typeOfEvent", CreateEventActivity.eventTypeEditTextView.getText().toString());
+        editor.putString("eventImage", nameOfImage);
+        editor.putBoolean("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
+        editor.putString("date", CreateEventActivity.selectedDateTextView.getText().toString());
+        editor.putString("time", CreateEventActivity.selectedTimeTextView.getText().toString());
+        if(staticSpinner.getSelectedItem().toString().equals("Church")){
+            editor.putString("location", "Church");
+        } else if(staticSpinner.getSelectedItem().toString().equals("Congregation House")) {
+            editor.putString("location", "Congregation House");
+        } else {
+            editor.putString("location", null);
+        }
+        // Commit to storage
+        editor.commit();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        SharedPreferences preferences = getPreferences(MODE_PRIVATE);
+        CreateEventActivity.nameEditTextView.setText(preferences.getString("name",""));
+        CreateEventActivity.fullNameEditTextView.setText(preferences.getString("fullName",""));
+        CreateEventActivity.commentEditTextView.setText(preferences.getString("comments",""));
+        CreateEventActivity.pastorNameEditTextView.setText(preferences.getString("pastorName",""));
+        CreateEventActivity.eventTypeEditTextView.setText(preferences.getString("typeOfEvent",""));
+        CreateEventActivity.selectedDateTextView.setText(preferences.getString("date",""));
+        CreateEventActivity.selectedTimeTextView.setText(preferences.getString("time",""));
+
+        if(preferences.getString("location", "Church").equals("Church")){
+            CreateEventActivity.staticSpinner.setSelection(0);
+        } else if(preferences.getString("location", "Church").equals("Congregation House")) {
+            CreateEventActivity.staticSpinner.setSelection(1);
+        } else {
+            CreateEventActivity.staticSpinner.setSelection(0);
+        }
+
+        Bundle extras = getIntent().getExtras();
+        if(extras != null){
+            nameOfImage = extras.getString("choosenImage");
+            imagePickerView.setImageURI(null);
+            imagePickerView.setImageURI(Utils.createUriForImages(nameOfImage));
+        } else {
+            imagePickerView.setImageURI(null);
+            imagePickerView.setImageURI(Utils.createUriForImages(preferences.getString("eventImage", "/drawable/bible_free_icon")));
+        }
+
+
+        if(preferences.getBoolean("withCommunion", true) == true){
+            CreateEventActivity.withCommunionCheckBox.setChecked(true);
+        } else {
+            CreateEventActivity.withCommunionCheckBox.setChecked(false);
+        }
 
     }
 
@@ -226,6 +316,19 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
     public static void showSetTime(int hourOfDay, int minute) {
         String.format("%2d:%2d", hourOfDay, minute);
         selectedTimeTextView.setText(String.format("%02d:%02d", hourOfDay, minute));
+    }
+
+    public static void clearUI() {
+        nameEditTextView.setText("");
+        fullNameEditTextView.setText("");
+        commentEditTextView.setText("");
+        pastorNameEditTextView.setText("");
+        eventTypeEditTextView.setText("");
+        imagePickerView.setImageURI(null);
+        imagePickerView.setImageURI(Utils.createUriForImages("/drawable/bible_free_icon"));
+        withCommunionCheckBox.setChecked(false);
+        selectedDateTextView.setText("");
+        selectedTimeTextView.setText("");
     }
 
 }

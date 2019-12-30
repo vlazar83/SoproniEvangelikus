@@ -1,5 +1,7 @@
 package com.vlazar83.sopronievangelikus;
 
+import android.net.Uri;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.GeoPoint;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -58,6 +60,11 @@ public class Utils {
         }
 
         return new Timestamp(date);
+    }
+
+    public static Uri createUriForImages(String imageName){
+        Uri imgUri= Uri.parse("android.resource://com.vlazar83.sopronievangelikus/"+imageName);
+        return imgUri;
     }
 
 }
