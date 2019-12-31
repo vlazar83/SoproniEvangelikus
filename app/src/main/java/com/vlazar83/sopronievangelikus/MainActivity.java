@@ -80,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         // switch off fab button until admin authentication does not happen
         final FloatingActionButton fabAddEvent = (FloatingActionButton) findViewById(R.id.fab_add_event);
         fabAddEvent.hide();
+        final FloatingActionButton fabSendNotification = (FloatingActionButton) findViewById(R.id.fab_send_notification);
+        fabSendNotification.hide();
 
         fabAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,6 +89,16 @@ public class MainActivity extends AppCompatActivity {
                 Intent eventDetailsIntent = new Intent(MainActivity.this, CreateEventActivity.class);
                 // Start the new activity
                 startActivity(eventDetailsIntent);
+
+            }
+        });
+
+        fabSendNotification.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendNotificationIntent = new Intent(MainActivity.this, SendNotificationActivity.class);
+                // Start the new activity
+                startActivity(sendNotificationIntent);
 
             }
         });
@@ -126,9 +138,10 @@ public class MainActivity extends AppCompatActivity {
                     // User is signed in
                     onSignedInInitialize(firebaseUser.getDisplayName());
 
-                    // Enable fab button for event creation for admin
+                    // Enable fab buttons for event creation and notification settings for admin
                     if (firebaseUser.getEmail().equals("lazar.viktor@gmail.com")){
                         fabAddEvent.show();
+                        fabSendNotification.show();
                         createSwipeMenuForAdmin();
                     }
 

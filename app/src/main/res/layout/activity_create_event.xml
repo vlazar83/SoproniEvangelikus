@@ -211,7 +211,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Spinner
-        android:id="@+id/event_location_dropdown_list"
+        android:id="@+id/send_notification_dropdown_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -237,7 +237,7 @@
         android:layout_marginTop="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/event_location_dropdown_list"
+        app:layout_constraintTop_toBottomOf="@+id/send_notification_dropdown_list"
         app:srcCompat="@drawable/family_free_icon" />
 
 

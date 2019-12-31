@@ -38,12 +38,12 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
 
     private final GeoPoint churchLocation = new GeoPoint(47.685276, 16.589422);
     private final GeoPoint congregationHouseLocation = new GeoPoint(47.685263, 16.588625);
-    private static Spinner locationSpinner, languageSpinner;
+    private Spinner locationSpinner, languageSpinner;
     public static final String LOG_TAG_FOR_DB_WRITE = "writeToFirestoreDB";
-    private static TextView selectedDateTextView, selectedTimeTextView;
-    private static EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
-    private static CheckBox withCommunionCheckBox;
-    private static ImageView imagePickerView;
+    private TextView selectedDateTextView, selectedTimeTextView;
+    private EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
+    private CheckBox withCommunionCheckBox;
+    private ImageView imagePickerView;
     private static String nameOfImage;
     private HashMap<String, Object> data;
 
@@ -109,7 +109,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         });
 
         // setup the Spinners in the UI
-        locationSpinner = (Spinner) findViewById(R.id.event_location_dropdown_list);
+        locationSpinner = (Spinner) findViewById(R.id.send_notification_dropdown_list);
         ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(this, R.array.locations, android.R.layout.simple_spinner_item);
         locationSpinner.setAdapter(locationAdapter);
 
@@ -123,19 +123,19 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
             public void onClick(View v) {
 
                 // if date and time is not filled, then do not trigger the event creation
-                String date = CreateEventActivity.selectedDateTextView.getText().toString();
-                String time = CreateEventActivity.selectedTimeTextView.getText().toString();
+                String date = selectedDateTextView.getText().toString();
+                String time = selectedTimeTextView.getText().toString();
 
                 if (!(date.isEmpty() || time.isEmpty())){
                     data = new HashMap<>();
 
-                    data.put("name", CreateEventActivity.nameEditTextView.getText().toString());
-                    data.put("fullName", CreateEventActivity.fullNameEditTextView.getText().toString());
-                    data.put("comments", CreateEventActivity.commentEditTextView.getText().toString());
-                    data.put("pastorName", CreateEventActivity.pastorNameEditTextView.getText().toString());
-                    data.put("typeOfEvent", CreateEventActivity.eventTypeEditTextView.getText().toString());
+                    data.put("name", nameEditTextView.getText().toString());
+                    data.put("fullName", fullNameEditTextView.getText().toString());
+                    data.put("comments", commentEditTextView.getText().toString());
+                    data.put("pastorName", pastorNameEditTextView.getText().toString());
+                    data.put("typeOfEvent", eventTypeEditTextView.getText().toString());
                     data.put("eventImage", nameOfImage);
-                    data.put("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
+                    data.put("withCommunion", withCommunionCheckBox.isChecked());
                     data.put("eventDateAndTime", Utils.convertTimeDetailsInStringsToTimestamp(date, time));
 
                     if(locationSpinner.getSelectedItem().toString().equals("Church")){
@@ -183,15 +183,15 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();  // Put the values from the UI
 
-        editor.putString("name", CreateEventActivity.nameEditTextView.getText().toString());
-        editor.putString("fullName", CreateEventActivity.fullNameEditTextView.getText().toString());
-        editor.putString("comments", CreateEventActivity.commentEditTextView.getText().toString());
-        editor.putString("pastorName", CreateEventActivity.pastorNameEditTextView.getText().toString());
-        editor.putString("typeOfEvent", CreateEventActivity.eventTypeEditTextView.getText().toString());
+        editor.putString("name", nameEditTextView.getText().toString());
+        editor.putString("fullName", fullNameEditTextView.getText().toString());
+        editor.putString("comments", commentEditTextView.getText().toString());
+        editor.putString("pastorName", pastorNameEditTextView.getText().toString());
+        editor.putString("typeOfEvent", eventTypeEditTextView.getText().toString());
         editor.putString("eventImage", nameOfImage);
-        editor.putBoolean("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
-        editor.putString("date", CreateEventActivity.selectedDateTextView.getText().toString());
-        editor.putString("time", CreateEventActivity.selectedTimeTextView.getText().toString());
+        editor.putBoolean("withCommunion", withCommunionCheckBox.isChecked());
+        editor.putString("date", selectedDateTextView.getText().toString());
+        editor.putString("time", selectedTimeTextView.getText().toString());
         if(locationSpinner.getSelectedItem().toString().equals("Church")){
             editor.putString("location", "Church");
         } else if(locationSpinner.getSelectedItem().toString().equals("Congregation House")) {
@@ -216,28 +216,28 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         super.onResume();
 
         SharedPreferences preferences = getPreferences(MODE_PRIVATE);
-        CreateEventActivity.nameEditTextView.setText(preferences.getString("name",""));
-        CreateEventActivity.fullNameEditTextView.setText(preferences.getString("fullName",""));
-        CreateEventActivity.commentEditTextView.setText(preferences.getString("comments",""));
-        CreateEventActivity.pastorNameEditTextView.setText(preferences.getString("pastorName",""));
-        CreateEventActivity.eventTypeEditTextView.setText(preferences.getString("typeOfEvent",""));
-        CreateEventActivity.selectedDateTextView.setText(preferences.getString("date",""));
-        CreateEventActivity.selectedTimeTextView.setText(preferences.getString("time",""));
+        nameEditTextView.setText(preferences.getString("name",""));
+        fullNameEditTextView.setText(preferences.getString("fullName",""));
+        commentEditTextView.setText(preferences.getString("comments",""));
+        pastorNameEditTextView.setText(preferences.getString("pastorName",""));
+        eventTypeEditTextView.setText(preferences.getString("typeOfEvent",""));
+        selectedDateTextView.setText(preferences.getString("date",""));
+        selectedTimeTextView.setText(preferences.getString("time",""));
 
         if(preferences.getString("location", "Church").equals("Church")){
-            CreateEventActivity.locationSpinner.setSelection(0);
+            locationSpinner.setSelection(0);
         } else if(preferences.getString("location", "Church").equals("Congregation House")) {
-            CreateEventActivity.locationSpinner.setSelection(1);
+            locationSpinner.setSelection(1);
         } else {
-            CreateEventActivity.locationSpinner.setSelection(0);
+            locationSpinner.setSelection(0);
         }
 
         if(preferences.getString("language", "Hungarian").equals("Hungarian")){
-            CreateEventActivity.languageSpinner.setSelection(0);
+            languageSpinner.setSelection(0);
         } else if(preferences.getString("language", "Hungarian").equals("German")) {
-            CreateEventActivity.languageSpinner.setSelection(1);
+            languageSpinner.setSelection(1);
         } else {
-            CreateEventActivity.languageSpinner.setSelection(0);
+            languageSpinner.setSelection(0);
         }
 
         Bundle extras = getIntent().getExtras();
@@ -252,9 +252,9 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
 
 
         if(preferences.getBoolean("withCommunion", true) == true){
-            CreateEventActivity.withCommunionCheckBox.setChecked(true);
+            withCommunionCheckBox.setChecked(true);
         } else {
-            CreateEventActivity.withCommunionCheckBox.setChecked(false);
+            withCommunionCheckBox.setChecked(false);
         }
 
     }
@@ -291,7 +291,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
                 });
     }
 
-    public static class DateDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
+    public class DateDialogFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener{
 
         public DateDialogFragment()
         {
@@ -310,7 +310,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
 
     }
 
-    public static class TimeDialogFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
+    public class TimeDialogFragment extends DialogFragment implements TimePickerDialog.OnTimeSetListener{
 
         public TimeDialogFragment()
         {
@@ -334,17 +334,17 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         }
     }
 
-    public static void showSetDate(int year,int month,int day) {
+    public void showSetDate(int year,int month,int day) {
         month++;
         selectedDateTextView.setText(year+"/"+month+"/"+day);
     }
 
-    public static void showSetTime(int hourOfDay, int minute) {
+    public void showSetTime(int hourOfDay, int minute) {
         String.format("%2d:%2d", hourOfDay, minute);
         selectedTimeTextView.setText(String.format("%02d:%02d", hourOfDay, minute));
     }
 
-    public static void clearUI() {
+    public void clearUI() {
         nameEditTextView.setText("");
         fullNameEditTextView.setText("");
         commentEditTextView.setText("");
