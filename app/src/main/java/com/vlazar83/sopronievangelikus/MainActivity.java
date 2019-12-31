@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_settings:
-                // User chose the "Settings" item, show the app settings UI...
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                 return true;
 
             case R.id.action_logout:

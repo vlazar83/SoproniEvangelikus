@@ -20,6 +20,7 @@
         <activity android:name=".CreateEventActivity" />
         <activity android:name=".IntroActivity" />
         <activity android:name=".ImagePickerActiviy" />
+        <activity android:name=".SettingsActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
