@@ -1,7 +1,6 @@
 package com.vlazar83.sopronievangelikus;
 
 import android.app.Activity;
-import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,9 +33,9 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         Event currentEvent = getItem(position);
 
-        TextView repositoryTextView = (TextView) listItemView.findViewById(R.id.event_name);
+        TextView eventDateAndTimeTextView = (TextView) listItemView.findViewById(R.id.event_time);
 
-        repositoryTextView.setText(currentEvent.getName());
+        eventDateAndTimeTextView.setText(Utils.convertTimeDetailsToTimestamp(currentEvent.getEventDateAndTimeSeconds(), currentEvent.getEventDateAndTimeNanoSeconds()));
 
         TextView fullNameTextView = (TextView) listItemView.findViewById(R.id.event_full_name);
 

@@ -5,7 +5,6 @@ import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -56,7 +55,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         this.selectedDateTextView = findViewById(R.id.create_event_choosen_date_text_view);
         this.selectedTimeTextView = findViewById(R.id.create_event_choosen_time_text_view);
 
-        this.nameEditTextView = findViewById(R.id.event_name);
+        this.nameEditTextView = findViewById(R.id.event_time);
         this.fullNameEditTextView = findViewById(R.id.event_full_name);
         this.eventTypeEditTextView = findViewById(R.id.event_type);
         this.pastorNameEditTextView = findViewById(R.id.event_pastor_name);

@@ -31,7 +31,7 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
 
         eventObject = (Event) intent.getSerializableExtra(MainActivity.INTENT_EVENT_DETAILS);
 
-        TextView nameTextView = findViewById(R.id.event_name);
+        TextView nameTextView = findViewById(R.id.event_time);
         nameTextView.setText(eventObject.getName());
 
         TextView fullNameTextView = findViewById(R.id.event_full_name);
