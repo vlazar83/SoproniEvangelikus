@@ -42,9 +42,18 @@ public class EventAdapter extends ArrayAdapter<Event> {
 
         fullNameTextView.setText(currentEvent.getFullName());
 
-        ImageView imageView = (ImageView) listItemView.findViewById(R.id.imageViewOfEventListItem);
-        imageView.setImageURI(null);
-        imageView.setImageURI(Utils.createUriForImages(currentEvent.getEventImage()));
+        ImageView imageViewOfEvent = (ImageView) listItemView.findViewById(R.id.imageViewOfEventListItem);
+        imageViewOfEvent.setImageURI(null);
+        imageViewOfEvent.setImageURI(Utils.createUriForImages(currentEvent.getEventImage()));
+
+        ImageView imageViewOfLanguage = (ImageView) listItemView.findViewById(R.id.imageViewOfLanguage);
+        imageViewOfLanguage.setImageURI(null);
+        String language = currentEvent.getLanguage();
+        if(language.equals("Hungarian")){
+            imageViewOfLanguage.setImageURI(Utils.createUriForImages("/drawable/hungary_flag"));
+        } else if (language.equals("German")){
+            imageViewOfLanguage.setImageURI(Utils.createUriForImages("/drawable/germany_flag"));
+        }
 
         return listItemView;
     }

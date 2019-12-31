@@ -43,6 +43,9 @@ public class EventDetailsActivity extends AppCompatActivity implements OnMapRead
         TextView pastorNameTextView = findViewById(R.id.event_pastor_name);
         pastorNameTextView.setText(eventObject.getPastorName());
 
+        TextView languageTextView = findViewById(R.id.event_language);
+        languageTextView.setText(eventObject.getLanguage());
+
         CheckBox withCommunionCheckBox = findViewById(R.id.event_with_communion);
         withCommunionCheckBox.setChecked(eventObject.getWithCommunion());
 

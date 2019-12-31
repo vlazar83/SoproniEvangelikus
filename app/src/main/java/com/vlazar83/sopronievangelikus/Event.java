@@ -16,8 +16,9 @@ public class Event implements Serializable {
     private String pastorName;
     private String typeOfEvent;
     private String eventImage;
+    private String language;
 
-    public Event(String name, String fullName, Long eventDateAndTimeSeconds, Integer eventDateAndTimeNanoSeconds, Double latitude, Double longitude, String comments, Boolean withCommunion, String pastorName, String typeOfEvent, String eventImage) {
+    public Event(String name, String fullName, Long eventDateAndTimeSeconds, Integer eventDateAndTimeNanoSeconds, Double latitude, Double longitude, String comments, Boolean withCommunion, String pastorName, String typeOfEvent, String eventImage, String language) {
         this.name = name;
         this.fullName = fullName;
         this.eventDateAndTimeSeconds = eventDateAndTimeSeconds;
@@ -29,10 +30,11 @@ public class Event implements Serializable {
         this.pastorName = pastorName;
         this.typeOfEvent = typeOfEvent;
         this.eventImage = eventImage;
+        this.language = language;
     }
 
     public Event(Map map) {
-        this((String)map.get("name"), (String)map.get("fullName"), (Long)map.get("eventDateAndTimeSeconds"),  (Integer)map.get("eventDateAndTimeNanoSeconds"), (Double)map.get("latitude"), (Double)map.get("longitude"), (String)map.get("comments"), (Boolean)map.get("withCommunion"), (String)map.get("pastorName"), (String)map.get("typeOfEvent"), (String)map.get("eventImage"));
+        this((String)map.get("name"), (String)map.get("fullName"), (Long)map.get("eventDateAndTimeSeconds"),  (Integer)map.get("eventDateAndTimeNanoSeconds"), (Double)map.get("latitude"), (Double)map.get("longitude"), (String)map.get("comments"), (Boolean)map.get("withCommunion"), (String)map.get("pastorName"), (String)map.get("typeOfEvent"), (String)map.get("eventImage"), (String)map.get("language"));
     }
 
 
@@ -117,6 +119,14 @@ public class Event implements Serializable {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public String getLanguage() {
+        return language;
+    }
+
+    public void setLanguage(String language) {
+        this.language = language;
     }
 
     public String getEventImage() {

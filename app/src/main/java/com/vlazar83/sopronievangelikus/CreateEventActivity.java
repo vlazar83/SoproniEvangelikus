@@ -39,7 +39,7 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
 
     private final GeoPoint churchLocation = new GeoPoint(47.685276, 16.589422);
     private final GeoPoint congregationHouseLocation = new GeoPoint(47.685263, 16.588625);
-    private static Spinner staticSpinner;
+    private static Spinner locationSpinner, languageSpinner;
     public static final String LOG_TAG_FOR_DB_WRITE = "writeToFirestoreDB";
     private static TextView selectedDateTextView, selectedTimeTextView;
     private static EditText nameEditTextView, fullNameEditTextView, eventTypeEditTextView, pastorNameEditTextView, commentEditTextView;
@@ -109,11 +109,14 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
             }
         });
 
-        staticSpinner = (Spinner) findViewById(R.id.event_location_dropdown_list);
-        ArrayAdapter<CharSequence> staticAdapter = ArrayAdapter.createFromResource(this, R.array.locations, android.R.layout.simple_spinner_item);
+        // setup the Spinners in the UI
+        locationSpinner = (Spinner) findViewById(R.id.event_location_dropdown_list);
+        ArrayAdapter<CharSequence> locationAdapter = ArrayAdapter.createFromResource(this, R.array.locations, android.R.layout.simple_spinner_item);
+        locationSpinner.setAdapter(locationAdapter);
 
-        // Apply the adapter to the spinner
-        staticSpinner.setAdapter(staticAdapter);
+        languageSpinner = (Spinner) findViewById(R.id.event_language_dropdown_list);
+        ArrayAdapter<CharSequence> languageAdapter = ArrayAdapter.createFromResource(this, R.array.languages, android.R.layout.simple_spinner_item);
+        languageSpinner.setAdapter(languageAdapter);
 
         Button createEventButton = findViewById(R.id.create_event_send_button);
         createEventButton.setOnClickListener(new View.OnClickListener() {
@@ -136,16 +139,24 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
                     data.put("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
                     data.put("eventDateAndTime", Utils.convertTimeDetailsInStringsToTimestamp(date, time));
 
-                    if(staticSpinner.getSelectedItem().toString().equals("Church")){
+                    if(locationSpinner.getSelectedItem().toString().equals("Church")){
                         data.put("location", churchLocation);
-                    } else if(staticSpinner.getSelectedItem().toString().equals("Congregation House")) {
+                    } else if(locationSpinner.getSelectedItem().toString().equals("Congregation House")) {
                         data.put("location", congregationHouseLocation);
                     } else {
                         data.put("location", null);
                     }
 
+                    if(languageSpinner.getSelectedItem().toString().equals("Hungarian")){
+                        data.put("language", "Hungarian");
+                    } else if(languageSpinner.getSelectedItem().toString().equals("German")) {
+                        data.put("language", "German");
+                    } else {
+                        data.put("language", null);
+                    }
+
                     sendFirebaseEvent(data);
-                    
+
                     // clear the SharedPref data
                     SharedPreferences preferences = getPreferences(MODE_PRIVATE);
                     SharedPreferences.Editor editor = preferences.edit();
@@ -182,12 +193,20 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         editor.putBoolean("withCommunion", CreateEventActivity.withCommunionCheckBox.isChecked());
         editor.putString("date", CreateEventActivity.selectedDateTextView.getText().toString());
         editor.putString("time", CreateEventActivity.selectedTimeTextView.getText().toString());
-        if(staticSpinner.getSelectedItem().toString().equals("Church")){
+        if(locationSpinner.getSelectedItem().toString().equals("Church")){
             editor.putString("location", "Church");
-        } else if(staticSpinner.getSelectedItem().toString().equals("Congregation House")) {
+        } else if(locationSpinner.getSelectedItem().toString().equals("Congregation House")) {
             editor.putString("location", "Congregation House");
         } else {
             editor.putString("location", null);
+        }
+
+        if(languageSpinner.getSelectedItem().toString().equals("Hungarian")){
+            editor.putString("language", "Hungarian");
+        } else if(languageSpinner.getSelectedItem().toString().equals("German")) {
+            editor.putString("language", "German");
+        } else {
+            editor.putString("language", null);
         }
         // Commit to storage
         editor.commit();
@@ -207,11 +226,19 @@ public class CreateEventActivity extends AppCompatActivity implements FirebaseEv
         CreateEventActivity.selectedTimeTextView.setText(preferences.getString("time",""));
 
         if(preferences.getString("location", "Church").equals("Church")){
-            CreateEventActivity.staticSpinner.setSelection(0);
+            CreateEventActivity.locationSpinner.setSelection(0);
         } else if(preferences.getString("location", "Church").equals("Congregation House")) {
-            CreateEventActivity.staticSpinner.setSelection(1);
+            CreateEventActivity.locationSpinner.setSelection(1);
         } else {
-            CreateEventActivity.staticSpinner.setSelection(0);
+            CreateEventActivity.locationSpinner.setSelection(0);
+        }
+
+        if(preferences.getString("language", "Hungarian").equals("Hungarian")){
+            CreateEventActivity.languageSpinner.setSelection(0);
+        } else if(preferences.getString("language", "Hungarian").equals("German")) {
+            CreateEventActivity.languageSpinner.setSelection(1);
+        } else {
+            CreateEventActivity.languageSpinner.setSelection(0);
         }
 
         Bundle extras = getIntent().getExtras();

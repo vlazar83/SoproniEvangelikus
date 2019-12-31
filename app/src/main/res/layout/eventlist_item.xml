@@ -11,9 +11,10 @@
         android:id="@+id/event_name"
         android:layout_width="180dp"
         android:layout_height="20dp"
+        android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageViewOfEventListItem"
         app:layout_constraintTop_toBottomOf="@+id/event_full_name"
         tools:text="event_name" />
 
@@ -21,8 +22,9 @@
         android:id="@+id/event_full_name"
         android:layout_width="180dp"
         android:layout_height="20dp"
+        android:layout_marginStart="8dp"
         android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/imageViewOfEventListItem"
         app:layout_constraintTop_toTopOf="parent"
         tools:text="event_full_name" />
 
@@ -31,6 +33,14 @@
         android:layout_width="50dp"
         android:layout_height="50dp"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars[0]" />
+
+    <ImageView
+        android:id="@+id/imageViewOfLanguage"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars[0]" />
 </androidx.constraintlayout.widget.ConstraintLayout>
