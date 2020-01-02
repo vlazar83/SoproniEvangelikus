@@ -66,6 +66,21 @@ public class SettingsActivity extends AppCompatActivity {
                             });
                 }
 
+                // Always subscribe to All topic
+                FirebaseMessaging.getInstance().subscribeToTopic("All")
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                String msg = "Subscribed to All topic";
+                                if (!task.isSuccessful()) {
+                                    msg = "Subscription to All topic failed";
+                                }
+                                Log.d(LOG_TAG, msg);
+                                // Toast.makeText(SettingsActivity.this, msg, Toast.LENGTH_SHORT).show();
+                                // storeSettings();
+                            }
+                        });
+
             }
         });
 
